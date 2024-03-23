@@ -1,4 +1,13 @@
+import { useWeatherData } from "../hooks/useWeatherData";
+import { useSelector } from "react-redux";
+import { useWeatherForeCast } from "../hooks/useWeatherForecast";
+// import {} from "../store/weatherSlice";
+
 export const Navbar = () => {
+    useWeatherData();
+    useWeatherForeCast();
+    const weatherData = useSelector((state) => state.weather);
+    console.log("weather data", weatherData);
     return (
         <div className="header">
             <div className="logo">
