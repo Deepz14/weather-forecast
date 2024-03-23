@@ -83,7 +83,7 @@ export const CurrentWeather = () => {
                         <img src={visibilityImg} alt="wind" className="wind-speed-icon" />
                         <div className="wind-card-details">
                             <div className="wind-card-title">Visibility</div>
-                            <div className="wind-card-value text-bold">6 km/h</div>
+                            <div className="wind-card-value text-bold">6 km</div>
                         </div>  
                     </div> 
                     <div className="wind-card">
