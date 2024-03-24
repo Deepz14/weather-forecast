@@ -1,7 +1,6 @@
 import { useWeatherData } from "../hooks/useWeatherData";
 import { useSelector } from "react-redux";
 import { useWeatherForeCast } from "../hooks/useWeatherForecast";
-// import {} from "../store/weatherSlice";
 
 export const Navbar = () => {
     useWeatherData();

@@ -10,7 +10,7 @@ export const useWeatherData = () => {
     const long = 77.7333;
     const dispatch = useDispatch();
     const [weatherData, setWeatherData] = useState(null);
-    // https://api.openweathermap.org/data/2.5/weather?lat=11.35&lon=77.7333&appid=c7a09aaed9adc609cfe958e46fc0421b&units=metric
+    
     const getWeatherData = async () => {
         try {
             const response = await fetch(apiURL + '/weather?lat='+ lat + '&lon=' + long + '&' + 'appid='+ apiKey +'&units=metric')
