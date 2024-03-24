@@ -1,35 +1,49 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { add_Current_location, add_dailyForecast, add_hourly_weather_info, add_next_five_day_tab, add_weatherInfo } from "../store/weatherSlice";
 import { useWeatherData } from "../hooks/useWeatherData";
 import { useWeatherForeCast } from "../hooks/useWeatherForecast";
+import ErrorDisplay from "./ErrorDisplay";
 
 export const Navbar = () => {
     const [searchLocation, setSearchLocation] = useState('');
+    const [ isLoading, setIsLoding ] = useState(true);
+    const [showError, setShowError] = useState(false);
+    const searchRef = useRef(null);
     const {current_location} = useSelector((state) => state.weather);
     const dispatch = useDispatch();
 
     const onSearchHandler = (e) => {
         if(e.keyCode === 13 || e.key === 'Enter'){
-            useWeatherData(searchLocation);
+            setShowError(false);
+            fetchWeatherData(searchLocation);
         }
     }
 
+    const onTryagainHandler = () => {
+        setShowError(false);
+        searchRef.current.focus();
+    };
+
+    const fetchWeatherData = async(location_info) => {
+        // Fetch Current weather data
+        const current_weather_info = await useWeatherData(location_info);
+        // Fetch weather data for next 5 days
+        const {hourlyWeatherData, tabNextDays, nextFiveDayData} = await useWeatherForeCast(location_info)
+
+        // dispatch actions
+        dispatch(add_weatherInfo(current_weather_info));
+        dispatch(add_hourly_weather_info(hourlyWeatherData));
+        dispatch(add_next_five_day_tab([...tabNextDays]));
+        dispatch(add_dailyForecast(nextFiveDayData));
+        dispatch(add_Current_location(location_info));
+    }
+
     useEffect(() => {
-        const fetchWeatherData = async() => {
-            if(current_location){
-                setSearchLocation(current_location);
-                console.log("FEtCh weather data")
-            }
-            const current_weather_info = await useWeatherData(current_location);
-            console.log("current_weather_info", current_weather_info);
-            const {hourlyWeatherData, tabNextDays, nextFiveDayData} = await useWeatherForeCast(current_location)
-            dispatch(add_weatherInfo(current_weather_info));
-            dispatch(add_hourly_weather_info(hourlyWeatherData));
-            dispatch(add_next_five_day_tab([...tabNextDays]));
-            dispatch(add_dailyForecast(nextFiveDayData));
+        if(current_location){
+            setSearchLocation(current_location);
         }
-        //fetchWeatherData();
+        // fetchWeatherData(current_location);
     }, []);
 
     return (
@@ -79,9 +93,14 @@ export const Navbar = () => {
                         />
                     </svg>
                 </div>
-                <input type="text" className="search-weather" value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} 
+                <input type="text" ref={searchRef} className="search-weather" value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} 
                     onKeyUp={onSearchHandler} placeholder="Search" />
             </div>
+            {
+                showError && (
+                    <ErrorDisplay searchInput={searchLocation} onTryAgain={onTryagainHandler} />
+                )
+            }
         </div>
     )
 }

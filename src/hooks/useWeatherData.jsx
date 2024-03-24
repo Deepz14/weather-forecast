@@ -27,6 +27,5 @@ export const useWeatherData = async(searchInput) => {
 
         return current_weather_info;
     } catch (error) {
-        console.log(error)
     }
 }

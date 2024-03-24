@@ -9,6 +9,8 @@ export const useWeatherForeCast = async(searchInput) => {
 
     const url = searchInput ? `${API_URL}/forecast?q=${searchInput}&appid=${API_KEY}&units=metric` : 
     `${API_URL}/forecast?lat=${DEFAULT_LATITUTE}&lon=${DEFAULT_LONGITUDE}&appid=${API_KEY}&units=metric`;
+
+    // Handler for current day hourly weather data
     const hourlyWeatherDataHandler = async(weatherData) => {
         for (let i = 0; i < 5; i++) {
             hourlyWeatherData.push({
@@ -19,6 +21,7 @@ export const useWeatherForeCast = async(searchInput) => {
         }
     }
 
+    // Handler for the next five day tab & and hourly weather data
     const nextFiveDayDataHandler = async(weatherData) => {
         for (let i = 0; i < weatherData.length; i++) {
             tabNextDays.add(await formatDate(weatherData[i]?.dt, 'short'));
