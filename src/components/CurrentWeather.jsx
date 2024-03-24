@@ -5,9 +5,6 @@ import WeatherCard from './WeatherCard';
 export const CurrentWeather = () => {
 
     const {current_weather_info, hourly_weather_info} = useSelector((state) => state.weather);
-    const weatherCardInfoLeft = ['wind-speed', 'pressure', 'sunrise'];
-    const weatherCardInfoRight = ['humidity', 'visibility', 'sunrise'];
-    console.log("current weather info use it", current_weather_info);
     return (
         <div className="current-weather-section">
             <h3 className="section-title">Today Overview</h3>
@@ -116,7 +113,7 @@ export const CurrentWeather = () => {
                                     </div>
                                 </div>)
                             })
-                            : ''
+                        : ''
                     }
                 </div>
             </div>

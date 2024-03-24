@@ -1,19 +1,14 @@
-import { useState, useEffect } from 'react'
-import { useDispatch } from "react-redux";
-import { add_dailyForecast, add_next_five_day_tab, add_hourly_weather_info } from "../store/weatherSlice";
+import { capitalize } from '../utils/helper';
+import { API_URL, API_KEY, DEFAULT_LATITUTE, DEFAULT_LONGITUDE } from '../utils/constants';
 import { formatDate, roundDegree } from '../utils/convertUnits';
 
-export const useWeatherForeCast  = () => {
-    const apiURL = import.meta.env.VITE_APP_WEATHER_API_URL;
-    const apiKey = import.meta.env.VITE_APP_WEATHER_API_KEY;
-    const lat = 11.35;
-    const long = 77.7333;
+export const useWeatherForeCast = async(searchInput) => {
     const hourlyWeatherData = [];
     const tabNextDays = new Set(['All Days']);
     const nextFiveDayData = [];
-    const dispatch = useDispatch();
 
-    const [weatherForeCast, setWeatherForeCast] = useState([]);
+    const url = searchInput ? `${API_URL}/forecast?q=${searchInput}&appid=${API_KEY}&units=metric` : 
+    `${API_URL}/forecast?lat=${DEFAULT_LATITUTE}&lon=${DEFAULT_LONGITUDE}&appid=${API_KEY}&units=metric`;
     const hourlyWeatherDataHandler = async(weatherData) => {
         for (let i = 0; i < 5; i++) {
             hourlyWeatherData.push({
@@ -23,6 +18,7 @@ export const useWeatherForeCast  = () => {
             })
         }
     }
+
     const nextFiveDayDataHandler = async(weatherData) => {
         for (let i = 0; i < weatherData.length; i++) {
             tabNextDays.add(await formatDate(weatherData[i]?.dt, 'short'));
@@ -36,20 +32,15 @@ export const useWeatherForeCast  = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchWeatherForeCast = async () => {
-            const response = await fetch(apiURL + '/forecast?lat='+ lat + '&lon=' + long + '&' + 'appid='+ apiKey +'&units=metric')
-            const data = await response.json()
-            setWeatherForeCast(data.list);
-            await hourlyWeatherDataHandler(data.list);
-            await nextFiveDayDataHandler(data.list);
-            
-            dispatch(add_hourly_weather_info(hourlyWeatherData));
-            dispatch(add_next_five_day_tab([...tabNextDays]));
-            dispatch(add_dailyForecast(nextFiveDayData));
-        }
-        fetchWeatherForeCast();
-    }, [])
+    try{
+        const response = await fetch(url);
+        const data = await response.json();
+    
+        await hourlyWeatherDataHandler(data.list);
+        await nextFiveDayDataHandler(data.list);
 
-    return (weatherForeCast)
+        return {hourlyWeatherData, tabNextDays, nextFiveDayData};
+    }catch(error){
+        console.log(error)
+    }
 }

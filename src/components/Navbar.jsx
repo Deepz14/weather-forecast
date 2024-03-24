@@ -1,12 +1,37 @@
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { add_Current_location, add_dailyForecast, add_hourly_weather_info, add_next_five_day_tab, add_weatherInfo } from "../store/weatherSlice";
 import { useWeatherData } from "../hooks/useWeatherData";
-import { useSelector } from "react-redux";
 import { useWeatherForeCast } from "../hooks/useWeatherForecast";
 
 export const Navbar = () => {
-    useWeatherData();
-    useWeatherForeCast();
-    const weatherData = useSelector((state) => state.weather);
-    console.log("weather data", weatherData);
+    const [searchLocation, setSearchLocation] = useState('');
+    const {current_location} = useSelector((state) => state.weather);
+    const dispatch = useDispatch();
+
+    const onSearchHandler = (e) => {
+        if(e.keyCode === 13 || e.key === 'Enter'){
+            useWeatherData(searchLocation);
+        }
+    }
+
+    useEffect(() => {
+        const fetchWeatherData = async() => {
+            if(current_location){
+                setSearchLocation(current_location);
+                console.log("FEtCh weather data")
+            }
+            const current_weather_info = await useWeatherData(current_location);
+            console.log("current_weather_info", current_weather_info);
+            const {hourlyWeatherData, tabNextDays, nextFiveDayData} = await useWeatherForeCast(current_location)
+            dispatch(add_weatherInfo(current_weather_info));
+            dispatch(add_hourly_weather_info(hourlyWeatherData));
+            dispatch(add_next_five_day_tab([...tabNextDays]));
+            dispatch(add_dailyForecast(nextFiveDayData));
+        }
+        //fetchWeatherData();
+    }, []);
+
     return (
         <div className="header">
             <div className="logo">
@@ -54,7 +79,8 @@ export const Navbar = () => {
                         />
                     </svg>
                 </div>
-                <input type="text" className="search-weather" placeholder="Search" />
+                <input type="text" className="search-weather" value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} 
+                    onKeyUp={onSearchHandler} placeholder="Search" />
             </div>
         </div>
     )

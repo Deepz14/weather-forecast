@@ -6,10 +6,8 @@ export const WeatherForeCast = () => {
     const [curr_tab, setCurr_tab]  = useState('All Days');
     const [dailyHourForecast, setDailyHourForecast] = useState([]);
     const {dailyForeCast, next_five_day_tab} = useSelector((state) => state.weather);
-    console.log('Next Five day tab result:', next_five_day_tab);
 
     useEffect(() => {
-        console.log('Daily Forecast result:', dailyForeCast);
         setDailyHourForecast(dailyForeCast);
     }, [dailyForeCast]);
 

@@ -14,12 +14,6 @@ export const convertToKmH = async (data) => {
 export const convertToKm = async (data) => {
     return `${data / 1000} km`;
 };
-  
-
-export const capitalize = async(string) => {
-    const splitString = string.split(' ');
-    return splitString.map((word) => word[0].toUpperCase() + word.slice(1)).join(' ');
-};
 
 export const formatDate = async(unixTimestamp, type) => {
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
