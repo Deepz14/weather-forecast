@@ -4,10 +4,10 @@ import { add_Current_location, add_dailyForecast, add_hourly_weather_info, add_n
 import { useWeatherData } from "../hooks/useWeatherData";
 import { useWeatherForeCast } from "../hooks/useWeatherForecast";
 import ErrorDisplay from "./ErrorDisplay";
+import { DEFAULT_CITY } from "../utils/constants";
 
 export const Navbar = () => {
     const [searchLocation, setSearchLocation] = useState('');
-    const [ isLoading, setIsLoding ] = useState(true);
     const [showError, setShowError] = useState(false);
     const searchRef = useRef(null);
     const {current_location} = useSelector((state) => state.weather);
@@ -25,25 +25,26 @@ export const Navbar = () => {
         searchRef.current.focus();
     };
 
-    const fetchWeatherData = async(location_info) => {
+    const fetchWeatherData = async(location_info, typeSearch) => {
         // Fetch Current weather data
-        const current_weather_info = await useWeatherData(location_info);
+        const current_weather_info = await useWeatherData(location_info, typeSearch);
         // Fetch weather data for next 5 days
-        const {hourlyWeatherData, tabNextDays, nextFiveDayData} = await useWeatherForeCast(location_info)
+        const {hourlyWeatherData, tabNextDays, nextFiveDayData} = await useWeatherForeCast(location_info, typeSearch)
 
         // dispatch actions
         dispatch(add_weatherInfo(current_weather_info));
         dispatch(add_hourly_weather_info(hourlyWeatherData));
         dispatch(add_next_five_day_tab([...tabNextDays]));
         dispatch(add_dailyForecast(nextFiveDayData));
-        dispatch(add_Current_location(location_info));
+        dispatch(add_Current_location(current_weather_info?.location));
     }
 
     useEffect(() => {
         if(current_location){
-            setSearchLocation(current_location);
+            fetchWeatherData(current_location, 'queryName');
+        }else{
+            fetchWeatherData(DEFAULT_CITY, 'queryName');
         }
-        // fetchWeatherData(current_location);
     }, []);
 
     return (

@@ -1,14 +1,13 @@
-import { capitalize } from '../utils/helper';
-import { API_URL, API_KEY, DEFAULT_LATITUTE, DEFAULT_LONGITUDE } from '../utils/constants';
+import { API_URL, API_KEY} from '../utils/constants';
 import { formatDate, roundDegree } from '../utils/convertUnits';
 
-export const useWeatherForeCast = async(searchInput) => {
+export const useWeatherForeCast = async(searchInput, typeSearch) => {
     const hourlyWeatherData = [];
     const tabNextDays = new Set(['All Days']);
     const nextFiveDayData = [];
 
-    const url = searchInput ? `${API_URL}/forecast?q=${searchInput}&appid=${API_KEY}&units=metric` : 
-    `${API_URL}/forecast?lat=${DEFAULT_LATITUTE}&lon=${DEFAULT_LONGITUDE}&appid=${API_KEY}&units=metric`;
+    const url = typeSearch === 'queryName' ? `${API_URL}/forecast?q=${searchInput}&appid=${API_KEY}&units=metric` : 
+    `${API_URL}/forecast?lat=${searchInput[0]}&lon=${searchInput[1]}&appid=${API_KEY}&units=metric`;
 
     // Handler for current day hourly weather data
     const hourlyWeatherDataHandler = async(weatherData) => {

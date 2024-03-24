@@ -3,9 +3,9 @@ import {API_URL, API_KEY, DEFAULT_LATITUTE, DEFAULT_LONGITUDE } from '../utils/c
 import { convertToKmH, convertToKm,formatDate, roundDegree } from '../utils/convertUnits';
 
 
-export const useWeatherData = async(searchInput) => {
-    const url = searchInput ? `${API_URL}/weather?q=${searchInput}&appid=${API_KEY}&units=metric` : 
-    `${API_URL}/weather?lat=${DEFAULT_LATITUTE}&lon=${DEFAULT_LONGITUDE}&appid=${API_KEY}&units=metric`;
+export const useWeatherData = async(searchInput, typeSearch) => {
+    const url = typeSearch === 'queryName' ? `${API_URL}/weather?q=${searchInput}&appid=${API_KEY}&units=metric` : 
+    `${API_URL}/weather?lat=${searchInput[0]}&lon=${searchInput[1]}&appid=${API_KEY}&units=metric`;
 
     try {
         const response = await fetch(url);
