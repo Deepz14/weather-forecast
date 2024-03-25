@@ -1,12 +1,13 @@
 import { PATH_ANIMATED_IMG } from '../utils/constants';
-import { useSelector } from "react-redux";
-import WeatherCard from './WeatherCard';
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from 'react';
+import { update_unit } from '../store/weatherSlice';
 
 export const CurrentWeather = () => {
 
-    const {current_weather_info, hourly_weather_info, loadingState} = useSelector((state) => state.weather);
+    const {current_weather_info, hourly_weather_info, loadingState, current_unit} = useSelector((state) => state.weather);
     const [loadingClassName, setLoadingClassName] = useState('');
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if(loadingState){
@@ -14,8 +15,13 @@ export const CurrentWeather = () => {
         }else{
             setLoadingClassName('');
         }
-    } , [loadingState] 
+        } , [loadingState] 
     )
+
+    const onChangeUnitHandler = () => {
+        const unitToChange = current_unit === 'metric' ? 'imperial' : 'metric';
+        dispatch(update_unit(unitToChange));
+    }
 
     return (
         <div className="current-weather-section">
@@ -23,10 +29,10 @@ export const CurrentWeather = () => {
             <div className="current-weather-cards">
                 <div className="current-weather-card-left">
                     <div className={`current-detail-animation ${loadingClassName}`}>
-                        <img src={PATH_ANIMATED_IMG + '/visibility.svg'} alt="visibility" />
+                        <img src={`img/static/${current_weather_info?.animated_img}.svg`} alt="animated_img" />
                     </div>
                     <div className={`current-detail-temp text-bold ${loadingClassName}`}>
-                        {current_weather_info?.temperature}
+                        {current_weather_info?.temperature}  <span onClick={onChangeUnitHandler} className='toggle-temps'>{current_unit === 'metric' ? ' /  F' : ' / C '}</span>
                     </div>
                     <div className={`cuurent-detail-desc ${loadingClassName}`}>{current_weather_info?.description}</div>
                      <hr />
@@ -60,7 +66,6 @@ export const CurrentWeather = () => {
                      </div>
                 </div>
                 <div className="current-weather-card-center-left">  
-                   {/* <WeatherCard current_weather_info={current_weather_info} /> */}
                     <div className="weather-temp-card">
                         <img src={PATH_ANIMATED_IMG + '/wind-speed.svg'} alt="wind" className="weather-temp-card-icon" />
                         <div className="weather-temp-card-details">

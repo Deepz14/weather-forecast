@@ -6,6 +6,7 @@ const initialState = {
     next_five_day_tab: [],
     hourly_weather_info: [],
     dailyForeCast: [],
+    current_unit: 'metric',
     loadingState: true,
     errorState: false
 }
@@ -34,12 +35,15 @@ export const weatherSlice = createSlice({
     },
     add_errorState: (state, action) => {
       return {...state, errorState: action.payload}
+    },
+    update_unit: (state, action) => {
+      return {...state, current_unit: action.payload}  
     }
   },
 })
 
 // Action creators are generated for each case reducer function
 export const { add_weatherInfo , add_dailyForecast, add_Current_location,
-  add_next_five_day_tab, add_hourly_weather_info, add_loadingState, add_errorState } = weatherSlice.actions;
+  add_next_five_day_tab, add_hourly_weather_info, add_loadingState, add_errorState, update_unit } = weatherSlice.actions;
 
 export default weatherSlice.reducer;

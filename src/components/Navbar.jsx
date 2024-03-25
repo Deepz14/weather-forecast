@@ -13,7 +13,7 @@ export const Navbar = () => {
     const [searchLocation, setSearchLocation] = useState('');
     const [showError, setShowError] = useState(false);
     const searchRef = useRef(null);
-    const {current_location} = useSelector((state) => state.weather);
+    const {current_location, current_unit} = useSelector((state) => state.weather);
     const dispatch = useDispatch();
 
     const onSearchHandler = (e) => {
@@ -26,19 +26,20 @@ export const Navbar = () => {
 
     const onTryagainHandler = () => {
         setShowError(false);
+        searchRef.current.disabled = false;
         searchRef.current.focus();
     };
 
     const fetchWeatherData = async(location_info, typeSearch) => {
         // Fetch Current weather data
-        const {current_weather_info, error} = await useWeatherData(location_info, typeSearch);
-
+        const {current_weather_info, error} = await useWeatherData(location_info, typeSearch, current_unit);
         if(error){
+            searchRef.current.disabled = true;
             setShowError(true);
             return;
         }
         // Fetch weather data for next 5 days
-        const {hourlyWeatherData, tabNextDays, nextFiveDayData} = await useWeatherForeCast(location_info, typeSearch)
+        const {hourlyWeatherData, tabNextDays, nextFiveDayData} = await useWeatherForeCast(location_info, typeSearch, current_unit)
 
         // dispatch actions
         dispatch(add_loadingState(false));
@@ -55,15 +56,12 @@ export const Navbar = () => {
         }else{
             if(location){
                 const {latitude, longitude} = location;
-                console.log("latitude", latitude);
-                console.log("longitude", longitude);
                 fetchWeatherData([latitude, longitude], 'coordinates');
             }else{
-                console.log("Default lat and lon", DEFAULT_LATITUTE, DEFAULT_LONGITUDE);
                 fetchWeatherData([DEFAULT_LATITUTE, DEFAULT_LONGITUDE], 'coordinates');
             }
         }
-    }, []);
+    }, [current_unit]);
 
     return (
         <div className="header">

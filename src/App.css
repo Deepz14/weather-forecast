@@ -268,3 +268,17 @@
 }
 
 /* End loader screen */
+
+.toggle-temps{
+  font-size: 14px;
+  vertical-align: super;
+  color: #0d6efd;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.toggle-temps:hover{
+  background-color: #000;
+  color: #fff;
+}

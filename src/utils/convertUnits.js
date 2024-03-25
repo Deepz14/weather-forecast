@@ -1,5 +1,5 @@
 export const roundDegree = async (degree, type) => {
-    const unit = type === 'metrics' ? '°C' : '°F';
+    const unit = type === 'metric' ? '°C' : '°F';
     if ((Math.round(degree * 10) / 10) % 1 === 0) {
       return `${(Math.round(degree * 10) / 10).toFixed(1)}${unit}`;
     } else {

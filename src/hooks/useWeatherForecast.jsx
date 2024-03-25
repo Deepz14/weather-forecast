@@ -1,13 +1,13 @@
 import { API_URL, API_KEY} from '../utils/constants';
 import { formatDate, roundDegree } from '../utils/convertUnits';
 
-export const useWeatherForeCast = async(searchInput, typeSearch) => {
+export const useWeatherForeCast = async(searchInput, typeSearch, unitType) => {
     const hourlyWeatherData = [];
     const tabNextDays = new Set(['All Days']);
     const nextFiveDayData = [];
 
-    const url = typeSearch === 'queryName' ? `${API_URL}/forecast?q=${searchInput}&appid=${API_KEY}&units=metric` : 
-    `${API_URL}/forecast?lat=${searchInput[0]}&lon=${searchInput[1]}&appid=${API_KEY}&units=metric`;
+    const url = typeSearch === 'queryName' ? `${API_URL}/forecast?q=${searchInput}&appid=${API_KEY}&units=${unitType}` : 
+    `${API_URL}/forecast?lat=${searchInput[0]}&lon=${searchInput[1]}&appid=${API_KEY}&units=${unitType}`;
 
     // Handler for current day hourly weather data
     const hourlyWeatherDataHandler = async(weatherData) => {
@@ -15,7 +15,7 @@ export const useWeatherForeCast = async(searchInput, typeSearch) => {
             hourlyWeatherData.push({
                 day: await formatDate(weatherData[i]?.dt, 'day'),
                 time: await formatDate(weatherData[i]?.dt, 'hour'),
-                temperature: await roundDegree(weatherData[i].main.temp),
+                temperature: await roundDegree(weatherData[i].main.temp, unitType),
             })
         }
     }
@@ -28,7 +28,7 @@ export const useWeatherForeCast = async(searchInput, typeSearch) => {
                 date: await formatDate(weatherData[i]?.dt, 'short'),
                 time: await formatDate(weatherData[i]?.dt, 'hour'),
                 icon: weatherData[i].weather[0].icon,
-                temperature: await roundDegree(weatherData[i].main.temp),
+                temperature: await roundDegree(weatherData[i].main.temp, unitType),
                 description: weatherData[i].weather[0].main
             })
         }

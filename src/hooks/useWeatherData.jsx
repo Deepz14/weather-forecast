@@ -3,9 +3,9 @@ import {API_URL, API_KEY, DEFAULT_LATITUTE, DEFAULT_LONGITUDE } from '../utils/c
 import { convertToKmH, convertToKm,formatDate, roundDegree } from '../utils/convertUnits';
 
 
-export const useWeatherData = async(searchInput, typeSearch) => {
-    const url = typeSearch === 'queryName' ? `${API_URL}/weather?q=${searchInput}&appid=${API_KEY}&units=metric` : 
-    `${API_URL}/weather?lat=${searchInput[0]}&lon=${searchInput[1]}&appid=${API_KEY}&units=metric`;
+export const useWeatherData = async(searchInput, typeSearch, unitType) => {
+    const url = typeSearch === 'queryName' ? `${API_URL}/weather?q=${searchInput}&appid=${API_KEY}&units=${unitType}` : 
+    `${API_URL}/weather?lat=${searchInput[0]}&lon=${searchInput[1]}&appid=${API_KEY}&units=${unitType}`;
     const error = null;
     try {
         const response = await fetch(url);
@@ -13,7 +13,7 @@ export const useWeatherData = async(searchInput, typeSearch) => {
 
         const current_weather_info = {
             animated_img : data?.weather[0].icon,
-            temperature: await roundDegree(data?.main.temp),
+            temperature: await roundDegree(data?.main.temp, unitType),
             description: await capitalize(data?.weather[0].description),
             location: data?.name,	
             date: await formatDate(data?.dt),
