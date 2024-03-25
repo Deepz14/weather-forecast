@@ -29,10 +29,10 @@ export const CurrentWeather = () => {
             <div className="current-weather-cards">
                 <div className="current-weather-card-left">
                     <div className={`current-detail-animation ${loadingClassName}`}>
-                        <img src={`img/static/${current_weather_info?.animated_img}.svg`} alt="animated_img" />
+                         <img className={`${loadingClassName}`} src={`img/static/${current_weather_info?.animated_img}.svg`} alt="animated_img" />
                     </div>
                     <div className={`current-detail-temp text-bold ${loadingClassName}`}>
-                        {current_weather_info?.temperature}  <span onClick={onChangeUnitHandler} className='toggle-temps'>{current_unit === 'metric' ? ' /  F' : ' / C '}</span>
+                        {current_weather_info?.temperature}  <span onClick={onChangeUnitHandler} className={`toggle-temps ${loadingClassName}`}>{current_unit === 'metric' ? ' /  F' : ' / C '}</span>
                     </div>
                     <div className={`cuurent-detail-desc ${loadingClassName}`}>{current_weather_info?.description}</div>
                      <hr />
