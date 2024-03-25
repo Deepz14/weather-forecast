@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { add_Current_location, add_dailyForecast, add_hourly_weather_info, add_next_five_day_tab, add_weatherInfo } from "../store/weatherSlice";
+import { add_Current_location, add_dailyForecast, add_hourly_weather_info, add_loadingState,
+     add_next_five_day_tab, add_weatherInfo } from "../store/weatherSlice";
 import { useWeatherData } from "../hooks/useWeatherData";
 import { useWeatherForeCast } from "../hooks/useWeatherForecast";
 import ErrorDisplay from "./ErrorDisplay";
-import { DEFAULT_CITY } from "../utils/constants";
+import { DEFAULT_LATITUTE, DEFAULT_LONGITUDE } from "../utils/constants";
+import { useGeoLocation } from "../hooks/useGeoLocation";
 
 export const Navbar = () => {
+    const {location, error } = useGeoLocation();
     const [searchLocation, setSearchLocation] = useState('');
     const [showError, setShowError] = useState(false);
     const searchRef = useRef(null);
@@ -15,8 +18,9 @@ export const Navbar = () => {
 
     const onSearchHandler = (e) => {
         if(e.keyCode === 13 || e.key === 'Enter'){
+            dispatch(add_loadingState(true));
             setShowError(false);
-            fetchWeatherData(searchLocation);
+            fetchWeatherData(searchLocation, 'queryName');
         }
     }
 
@@ -27,11 +31,17 @@ export const Navbar = () => {
 
     const fetchWeatherData = async(location_info, typeSearch) => {
         // Fetch Current weather data
-        const current_weather_info = await useWeatherData(location_info, typeSearch);
+        const {current_weather_info, error} = await useWeatherData(location_info, typeSearch);
+
+        if(error){
+            setShowError(true);
+            return;
+        }
         // Fetch weather data for next 5 days
         const {hourlyWeatherData, tabNextDays, nextFiveDayData} = await useWeatherForeCast(location_info, typeSearch)
 
         // dispatch actions
+        dispatch(add_loadingState(false));
         dispatch(add_weatherInfo(current_weather_info));
         dispatch(add_hourly_weather_info(hourlyWeatherData));
         dispatch(add_next_five_day_tab([...tabNextDays]));
@@ -43,7 +53,15 @@ export const Navbar = () => {
         if(current_location){
             fetchWeatherData(current_location, 'queryName');
         }else{
-            fetchWeatherData(DEFAULT_CITY, 'queryName');
+            if(location){
+                const {latitude, longitude} = location;
+                console.log("latitude", latitude);
+                console.log("longitude", longitude);
+                fetchWeatherData([latitude, longitude], 'coordinates');
+            }else{
+                console.log("Default lat and lon", DEFAULT_LATITUTE, DEFAULT_LONGITUDE);
+                fetchWeatherData([DEFAULT_LATITUTE, DEFAULT_LONGITUDE], 'coordinates');
+            }
         }
     }, []);
 

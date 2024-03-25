@@ -1,22 +1,34 @@
 import { PATH_ANIMATED_IMG } from '../utils/constants';
 import { useSelector } from "react-redux";
 import WeatherCard from './WeatherCard';
+import { useEffect, useState } from 'react';
 
 export const CurrentWeather = () => {
 
-    const {current_weather_info, hourly_weather_info} = useSelector((state) => state.weather);
+    const {current_weather_info, hourly_weather_info, loadingState} = useSelector((state) => state.weather);
+    const [loadingClassName, setLoadingClassName] = useState('');
+
+    useEffect(() => {
+        if(loadingState){
+            setLoadingClassName('loading-animation');
+        }else{
+            setLoadingClassName('');
+        }
+    } , [loadingState] 
+    )
+
     return (
         <div className="current-weather-section">
             <h3 className="section-title">Today Overview</h3>
             <div className="current-weather-cards">
                 <div className="current-weather-card-left">
-                    <div className="current-detail-animation">
+                    <div className={`current-detail-animation ${loadingClassName}`}>
                         <img src={PATH_ANIMATED_IMG + '/visibility.svg'} alt="visibility" />
                     </div>
-                    <div className="current-detail-temp text-bold">
+                    <div className={`current-detail-temp text-bold ${loadingClassName}`}>
                         {current_weather_info?.temperature}
                     </div>
-                    <div className="cuurent-detail-desc">{current_weather_info?.description}</div>
+                    <div className={`cuurent-detail-desc ${loadingClassName}`}>{current_weather_info?.description}</div>
                      <hr />
                      <div className="current-location-container">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,7 +43,7 @@ export const CurrentWeather = () => {
                             strokeWidth="1.5"
                             />
                         </svg>
-                        <div className="current-location-city">{current_weather_info?.location}</div>
+                        <div className={`current-location-city ${loadingClassName}`}>{current_weather_info?.location}</div>
                      </div>
                      <div className="current-date-container">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +56,7 @@ export const CurrentWeather = () => {
                             fill="#0F172A"
                             />
                         </svg>
-                        <div className="current-date">{current_weather_info?.date}</div>
+                        <div className={`current-date ${loadingClassName}`}>{current_weather_info?.date}</div>
                      </div>
                 </div>
                 <div className="current-weather-card-center-left">  
@@ -53,21 +65,21 @@ export const CurrentWeather = () => {
                         <img src={PATH_ANIMATED_IMG + '/wind-speed.svg'} alt="wind" className="weather-temp-card-icon" />
                         <div className="weather-temp-card-details">
                             <div className="weather-temp-card-title">Wind Speed</div>
-                            <div className="weather-temp-card-value text-bold">{current_weather_info?.wind_speed}</div>
+                            <div className={`weather-temp-card-value text-bold ${loadingClassName}`}>{current_weather_info?.wind_speed}</div>
                         </div>  
                     </div> 
                     <div className="weather-temp-card">
                         <img src={PATH_ANIMATED_IMG + '/pressure.svg'} alt="wind" className="weather-temp-card-icon" />
                         <div className="weather-temp-card-details">
                             <div className="weather-temp-card-title">Pressure</div>
-                            <div className="weather-temp-card-value text-bold">{current_weather_info?.pressure}</div>
+                            <div className={`weather-temp-card-value text-bold ${loadingClassName}`}>{current_weather_info?.pressure}</div>
                         </div>  
                     </div> 
                     <div className="weather-temp-card">
                         <img src={PATH_ANIMATED_IMG + '/sunrise.svg'} alt="wind" className="weather-temp-card-icon" />
                         <div className="weather-temp-card-details">
                             <div className="weather-temp-card-title">Sunrise</div>
-                            <div className="weather-temp-card-value text-bold">{current_weather_info?.sunrise}</div>
+                            <div className={`weather-temp-card-value text-bold ${loadingClassName}`}>{current_weather_info?.sunrise}</div>
                         </div>  
                     </div> 
                 </div>
@@ -76,21 +88,21 @@ export const CurrentWeather = () => {
                         <img src={PATH_ANIMATED_IMG + '/humidity.svg'} alt="wind" className="weather-temp-card-icon" />
                         <div className="weather-temp-card-details">
                             <div className="weather-temp-card-title">Humidity</div>
-                            <div className="weather-temp-card-value text-bold">{current_weather_info?.humidity} %</div>
+                            <div className={`weather-temp-card-value text-bold ${loadingClassName}`}>{current_weather_info?.humidity} %</div>
                         </div>  
                     </div> 
                     <div className="weather-temp-card">
                         <img src={PATH_ANIMATED_IMG + '/visibility.svg'} alt="wind" className="weather-temp-card-icon" />
                         <div className="weather-temp-card-details">
                             <div className="weather-temp-card-title">Visibility</div>
-                            <div className="weather-temp-card-value text-bold">{current_weather_info?.visibility}</div>
+                            <div className={`weather-temp-card-value text-bold ${loadingClassName}`}>{current_weather_info?.visibility}</div>
                         </div>  
                     </div> 
                     <div className="weather-temp-card">
                         <img src={PATH_ANIMATED_IMG + '/sunset.svg'} alt="wind" className="weather-temp-card-icon" />
                         <div className="weather-temp-card-details">
                             <div className="weather-temp-card-title">Sunset</div>
-                            <div className="weather-temp-card-value text-bold">{current_weather_info?.sunset}</div>
+                            <div className={`weather-temp-card-value text-bold ${loadingClassName}`}>{current_weather_info?.sunset}</div>
                         </div>  
                     </div> 
                 </div>
@@ -101,13 +113,13 @@ export const CurrentWeather = () => {
                             return (
                                 <div className="daily-forecast" key={index}>
                                     <div className="left-info">
-                                        <div className="left-info-day">{item?.day}</div>
-                                        <div className="left-info-time">
+                                        <div className={`left-info-day ${loadingClassName}`}>{item?.day}</div>
+                                        <div className={`left-info-time ${loadingClassName}`}>
                                             {item?.time}
                                         </div>
                                     </div>
                                     <div className="right-info">
-                                        <div className="right-info-temp text-bold">
+                                        <div className={`right-info-temp text-bold ${loadingClassName}`}>
                                             {item?.temperature}
                                         </div>
                                     </div>

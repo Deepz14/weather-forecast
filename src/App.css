@@ -245,3 +245,26 @@
 }
 
 /* End Error Display */
+
+ /* loader screen */
+.loading-animation {
+  color: transparent !important;
+  border-radius: 5px;
+  background-color: #0f172a;
+  user-select: none;
+  animation: loading-animation 0.6s infinite ease reverse;
+}
+
+@keyframes loading-animation {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.04;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+/* End loader screen */

@@ -6,7 +6,7 @@ import { convertToKmH, convertToKm,formatDate, roundDegree } from '../utils/conv
 export const useWeatherData = async(searchInput, typeSearch) => {
     const url = typeSearch === 'queryName' ? `${API_URL}/weather?q=${searchInput}&appid=${API_KEY}&units=metric` : 
     `${API_URL}/weather?lat=${searchInput[0]}&lon=${searchInput[1]}&appid=${API_KEY}&units=metric`;
-
+    const error = null;
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -25,7 +25,8 @@ export const useWeatherData = async(searchInput, typeSearch) => {
             sunset: await formatDate(data.sys.sunset, "hour")
         }
 
-        return current_weather_info;
+        return {current_weather_info, error};
     } catch (error) {
+        return {current_weather_info: null, error: error};
     }
 }
