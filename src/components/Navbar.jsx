@@ -51,17 +51,18 @@ export const Navbar = () => {
     }
 
     useEffect(() => {
-        if(current_location){
-            fetchWeatherData(current_location, 'queryName');
-        }else{
-            if(location){
-                const {latitude, longitude} = location;
-                fetchWeatherData([latitude, longitude], 'coordinates');
+        if(location && error === null){
+            const {latitude, longitude} = location;
+            fetchWeatherData([latitude, longitude], 'coordinates');
+        }
+        else if(error && location === null)  {
+            if(current_location){
+                fetchWeatherData(current_location, 'queryName');
             }else{
                 fetchWeatherData([DEFAULT_LATITUTE, DEFAULT_LONGITUDE], 'coordinates');
             }
         }
-    }, [current_unit]);
+    }, [current_unit, location]);
 
     return (
         <div className="header">
